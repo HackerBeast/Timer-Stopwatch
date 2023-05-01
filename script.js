@@ -1,3 +1,29 @@
+$(".stopwatch-btn").click(function () {
+    //hide all other wrappers
+    $(".outer-wrapper > div").slideUp();
+    //show stopwatch wrapper
+    $(".stopwatch").slideDown();
+    //update type text
+    $(".type").html("Stopwatch");
+});
+
+$(".back-btn").click(function () {
+    //hide all other wrappers
+    $(".outer-wrapper > div").slideUp();
+    //show clock wrapper
+    $(".clock").slideDown();
+    //update type text
+    $(".type").html("clock");
+});
+
+$(".timer-btn").click(function () {
+    //hide all other wrappers
+    $(".outer-wrapper > div").slideUp();
+    //show timer wrapper
+    $(".timer").slideDown();
+    //update type text
+    $(".type").html("timer");
+});
 const addTrailingZero = (num) => {
     return num < 10 ? "0" + num : num;
 
@@ -134,4 +160,115 @@ $(".lap-stopwatch").click(function () {
              </p>
             </div> `
     );
+});
+
+
+
+
+//timer
+
+let time = 0,
+timerHours = 0,
+timerMinutes = 0,
+timerSeconds = 0,
+timerMiliseconds = 0,
+timerInterval;
+
+const getTime = () => {
+    time = prompt("Enteer time in minutes");
+    //convert time to seconds
+    time = time * 60;
+    //update timer default
+    setTime();
+};
+
+const setTime = () => {
+    timerHours = Math.floor(time / 3600);
+    timerMinutes = Math.floor((time % 3600) / 60);
+    timerSeconds = Math.floor(time % 60);
+
+    // show user entered time on document
+    $("#timer-hour").html(addTrailingZero(timerHours));
+    $("#timer-min").html(addTrailingZero(timerMinutes));
+    $("#timer-sec").html(addTrailingZero(timerSeconds));
+    $("#timer-ms").html(addTrailingZero(timerMiliseconds));
+};
+
+const timer = () => {
+    timerMiliseconds--;
+    if (timerMiliseconds === -1) {
+        timerMiliseconds = 99;
+        timerSeconds--;
+    }
+    if (timerSeconds === -1) {
+        timerSeconds = 59;
+        timerMinutes--;
+    }
+    if (timerMinutes === -1) {
+        timerMinutes = 59;
+        timerHours--;
+    }
+
+    // update time
+    $("#timer-hour").html(addTrailingZero(timerHours));
+    $("#timer-min").html(addTrailingZero(timerMinutes));
+    $("#timer-sec").html(addTrailingZero(timerSeconds));
+    $("#timer-ms").html(addTrailingZero(timerMiliseconds));
+
+    // check time up on every interval
+    timeUp();
+};
+
+const startTimer = () => {
+    //before starting check if valid time given
+    if (
+        (timerHours === 0) && (timerMinutes === 0) &&
+        timerSeconds === 0 &&
+        timerMiliseconds === 0
+    ) {
+        //if all values are zero geet time
+        getTime();
+    } else {
+        //start timer
+        timerInterval = setInterval(timer, 10);
+        $(".start-timer").hide();
+        $(".stop-timer").show();
+    }
+};
+
+const stopTimer = () => {
+    clearInterval(timerInterval);
+    $(".start-timer").show();
+    $(".stop-timer").hide();
+};
+
+const resetTimer = () => {
+    stopTimer();
+    time = 0;
+    timerMiliseconds = 0;
+    setTime();
+};
+
+//check if time remaining 0
+const timeUp = () => {
+    if (
+    timerHours === 0 &&
+    timerMinutes === 0 &&
+    timerSeconds === 0 &&
+    timerMiliseconds === 0
+    ) {
+        resetTimer();
+        alert("Time's up");
+    }    
+};
+$(".start-timer").click(function () {
+    startTimer();
+});
+
+$(".stop-timer").click(function () {
+    stopTimer();
+});
+
+$(".reset-timer").click(function () {
+    resetTimer();
 });
